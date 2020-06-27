@@ -4,10 +4,10 @@ simply put that on a device on your network and send it commands and it will res
 ######
 *e.g.* Sending cue :
 
-..*create telnet device with port `12345`
-..*create control string : `cue \\$`
-..*create remote transport receiving on port `12346`
-..*send command with variable 0 *i.e.* `('cue 0')`
+- create telnet device with port `12345`
+- create control string : `cue \\$`
+- create remote transport receiving on port `12346`
+- send command with variable 0 *i.e.* `('cue 0')`
 
 received osc command: `/d3/showcontrol/cue 0`
 ######

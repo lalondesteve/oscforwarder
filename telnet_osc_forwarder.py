@@ -4,48 +4,56 @@ from datetime import datetime
 from pythonosc import udp_client
 import socketserver
 
+# Define constants
+INPORT = 12345      # TCP receive port
+OUTPORT = 12346     # osc send port
+
+# TODO: logging, args?
+
 class TelnetOSC(socketserver.BaseRequestHandler):
+    # handler to convert message to osc
     def osc_message(self, message, ip):
+        # build /d3/showcontrol osc message
         header = '/d3/showcontrol/'
-        client = udp_client.SimpleUDPClient(ip, 12346)
+        client = udp_client.SimpleUDPClient(ip, OUTPORT)
         try:
             extension, data = message.split()
-            header = header + extension.decode('utf8')
+            header = header + extension
             data = int(data)
+            # send message back to the client
             client.send_message(header, data)
         except Exception as e:
             print(e)
-            data = None
-        return data
 
     def setup(self):
-        now = datetime.now()
-        print(now, ':', self.client_address[0], 'Connected!')
+        self.client = self.client_address[0]
+        self.now = datetime.now()
 
     def handle(self):
+        # receive message, parse and pass it to osc_message
         while True:
             try:
-                data = self.request.recv(128)
+                # short messages are expected
+                data_bytes = self.request.recv(128)
+                data = data_bytes.decode('utf8')
             except Exception as e:
                 print(e)
                 data = None
             if data and data is not '':
-                print(data)
-                message = self.osc_message(data.strip(), self.client_address[0])
-                now = datetime.now()
-                print(now, message)
-            else:
-                now = datetime.now()
-                print(str(now), ':', self.client_address[0], 'Disconnected')
-                break
+                # sanity check before parsing
+                self.osc_message(data.strip(), self.client)
+            print(self.now, ':', self.client, "'" + data + "'")
+            break
 
 
 class ServeOscTCP(object):
+    # Run threaded server with TelnetOSC handler
     def start(self):
-        server = socketserver.ThreadingTCPServer(('', 12345), TelnetOSC)
+        server = socketserver.ThreadingTCPServer(('', INPORT), TelnetOSC)
         try:
             server.serve_forever()
         except KeyboardInterrupt:
+            # this is probably redundant with the finally clause
             server.server_close()
         finally:
             server.server_close()

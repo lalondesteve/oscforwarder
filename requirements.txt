@@ -1,1 +1,1 @@
-python-osc
+python-osc==1.7.0

@@ -1,0 +1,13 @@
+[Unit]
+Description=oscforwarder
+After=network.target
+StartLimitIntervalSec=0
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=$THISUSER
+ExecStart=/usr/bin/python $THISFILE
+
+[Install]
+WantedBy=multi-user.target

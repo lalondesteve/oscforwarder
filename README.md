@@ -1,4 +1,4 @@
-## python tcp server to forward command as osc to Disguise d3 software. 
+## python tcp server to forward commands as osc to Disguise d3 software. 
 
 simply put that on a device on your network and send it commands and it will resend it to the server as osc. 
 ######

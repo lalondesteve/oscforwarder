@@ -6,8 +6,8 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 RestartSec=1
-User=pi
-ExecStart=/usr/bin/python /home/pi/oscforwarder/telnet_osc_forwarder.py
+User=$THISUSER
+ExecStart=/usr/bin/python $THISFILE
 
 [Install]
 WantedBy=multi-user.target
